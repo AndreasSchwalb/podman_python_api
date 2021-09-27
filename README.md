@@ -1,6 +1,9 @@
 # Podman API wrapper
 This library wrappes the podman REST API to python methods.
-Acctually it is just a proof of concept. None of the implementations are finished.
+
+Acctually it connects to the API via unix socket.
+
+This is just a proof of concept. None of the implementations are finished.
 Even the arcitecture may change in further versions.
 
 

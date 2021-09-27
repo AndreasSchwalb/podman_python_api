@@ -42,6 +42,10 @@ class PodmanSocket:
         query_params: Dict = None,
         body: Dict = None,
         timeout: int = 10,
+        headers: Dict[str, str] = {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+        },
         **kwargs: Dict
     ) -> requests.Response:
         try:
@@ -50,10 +54,7 @@ class PodmanSocket:
                 timeout=timeout,
                 params=query_params,
                 json=body,
-                headers={
-                    'Content-type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers=headers,
                 **kwargs
             )
             self._connection_retry = 0

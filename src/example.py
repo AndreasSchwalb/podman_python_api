@@ -12,8 +12,14 @@ api = PodmanApi(
 
 api.image_pull('alpine')
 
+api.image_build(
+    dockerfile_path='https://raw.githubusercontent.com/ \
+        AndreasSchwalb/Containerfiles/master/alpine-ssh-rsync/Dockerfile',
+    tag='test:0.0.1'
+)
+
 con = api.container_create(
-    image='alpine',
+    image='test:0.0.1',
     name='test-alpine',
     env={
         'test': 'test-val'
@@ -43,7 +49,6 @@ con = api.container_create(
         }
     ]
 )
-
 api.container_start('test-alpine')
 
 api.container_stop('test-alpine')

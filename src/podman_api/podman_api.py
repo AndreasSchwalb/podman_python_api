@@ -66,6 +66,39 @@ class PodmanApi:
 
         return ''
 
+    def image_build(
+        self,
+        tag: str,
+        dockerfile_path: str = None,
+        dockerfile_remote_url: str = None,
+
+
+    ) -> None:
+        logger.info('Build image')
+        url = f'/{self.api_version}/libpod/build'
+        params = {
+            'dockerfile': dockerfile_path,
+            'remote': dockerfile_remote_url,
+            't': tag,
+            'rm': True
+
+        }
+        resp = self.podman_socket.post(
+            url=url,
+            query_params=params,
+            headers={
+                'Accept': 'application/json'
+            },
+
+        )
+
+        result = PodmanApiResponse(resp)
+
+        if result.successfully:
+            logger.info(f'build image {tag}')
+        else:
+            logger.warning(f"Could not build image {tag}. {result.message.get('cause')}")
+
     def container_create(
         self,
         image: str,

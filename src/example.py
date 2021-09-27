@@ -1,0 +1,53 @@
+from pprint import pprint
+
+from podman_api import PodmanApi, PodmanSocket
+
+socket_path = '/run/user/1000/podman/podman.sock'
+pod_sock = PodmanSocket(socket_path)
+api = PodmanApi(
+    podman_socket=pod_sock,
+    api_version="v3.0.0"
+)
+
+
+api.image_pull('alpine')
+
+con = api.container_create(
+    image='alpine',
+    name='test-alpine',
+    env={
+        'test': 'test-val'
+    },
+    expose={
+        5555: 'tcp'
+    },
+    volumes=[
+        {
+            'Dest': '/vol_1',
+            'Name': 'test_vol'
+        }
+    ],
+    mounts=[
+        {
+            'Destination': '/test',
+            'Source': '/home/andy/Dokumente/python/podman-backup',
+            'Options': ['rbind']
+        }
+    ],
+    command=['/usr/bin/tail', '-f', '/dev/null'],
+    remove=False,
+    portmappings=[
+        {
+            "container_port": 1234,
+            "host_port": 1234
+        }
+    ]
+)
+
+api.container_start('test-alpine')
+
+api.container_stop('test-alpine')
+
+api.container_delete('test-alpine')
+
+pprint(api.image_list())

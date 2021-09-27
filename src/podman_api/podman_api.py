@@ -1,4 +1,5 @@
 from typing import Any, Dict, List
+from pprint import pformat
 
 from extended_config_parser import ExtendedConfigParser
 from logger import Logger
@@ -71,8 +72,6 @@ class PodmanApi:
         tag: str,
         dockerfile_path: str = None,
         dockerfile_remote_url: str = None,
-
-
     ) -> None:
         logger.info('Build image')
         url = f'/{self.api_version}/libpod/build'
@@ -94,10 +93,31 @@ class PodmanApi:
 
         result = PodmanApiResponse(resp)
 
+        logger.debug(pformat(result.message))
+
         if result.successfully:
             logger.info(f'build image {tag}')
         else:
             logger.warning(f"Could not build image {tag}. {result.message.get('cause')}")
+
+    def image_prune(self) -> None:
+        logger.info('Prune unused images')
+        url = f'/{self.api_version}/libpod/images/prune'
+        params = {'filters': 'dangling=true'}
+        resp = self.podman_socket.post(
+            url=url,
+            query_params=params,
+            headers={
+                'Accept': 'application/json'
+            },
+
+        )
+
+        result = PodmanApiResponse(resp)
+        if result.successfully:
+            logger.info(f'deleted {len(result.message)} images')
+        else:
+            logger.warning(f"Could not prune images. {result.message.get('cause')}")
 
     def container_create(
         self,

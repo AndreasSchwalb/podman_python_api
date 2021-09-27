@@ -13,8 +13,7 @@ api = PodmanApi(
 api.image_pull('alpine')
 
 api.image_build(
-    dockerfile_path='https://raw.githubusercontent.com/ \
-        AndreasSchwalb/Containerfiles/master/alpine-ssh-rsync/Dockerfile',
+    dockerfile_path='https://raw.githubusercontent.com/AndreasSchwalb/Containerfiles/master/alpine-ssh-rsync/Dockerfile',
     tag='test:0.0.1'
 )
 
@@ -54,5 +53,7 @@ api.container_start('test-alpine')
 api.container_stop('test-alpine')
 
 api.container_delete('test-alpine')
+
+api.image_prune()
 
 pprint(api.image_list())

@@ -100,6 +100,21 @@ class PodmanApi:
         else:
             logger.warning(f"Could not build image {tag}. {result.message.get('cause')}")
 
+    def image_exists(self, name: str) -> bool:
+
+        if name:
+            url = f'/{self.api_version}/libpod/images/{name}/exists'
+            resp = self.podman_socket.get(url)
+            result = PodmanApiResponse(resp)
+        else:
+            logger.warning("No image name was given")
+            return False
+
+        if result.successfully:
+            return True
+        else:
+            return False
+
     def image_prune(self) -> None:
         logger.info('Prune unused images')
         url = f'/{self.api_version}/libpod/images/prune'
@@ -258,3 +273,41 @@ class PodmanApi:
             return True
         else:
             return False
+
+    def container_pause(self, name: str) -> None:
+        logger.info(f'Pause container {name}')
+        container_exists = self.container_exists(name)
+        if container_exists:
+
+            url = f'/{self.api_version}/libpod/containers/{name}/pause'
+            resp = self.podman_socket.post(url=url)
+            result = PodmanApiResponse(resp)
+        else:
+            logger.warning(f"container {name} does not exist")
+            return
+
+        if result.successfully:
+            logger.info(f"Paused container {name}")
+        else:
+            logger.warning(f"Could not pause Container {name}")
+            if result.message:
+                logger.warning(f"{result.message.get('cause')}")
+
+    def container_unpause(self, name: str) -> None:
+        logger.info(f'Unpause container {name}')
+        container_exists = self.container_exists(name)
+        if container_exists:
+
+            url = f'/{self.api_version}/libpod/containers/{name}/unpause'
+            resp = self.podman_socket.post(url=url)
+            result = PodmanApiResponse(resp)
+        else:
+            logger.warning(f"container {name} does not exist")
+            return
+
+        if result.successfully:
+            logger.info(f"Unpaused container {name}")
+        else:
+            logger.warning(f"Could not unpause container {name}")
+            if result.message:
+                logger.warning(f"{result.message.get('cause')}")

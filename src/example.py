@@ -17,6 +17,8 @@ api.image_build(
     tag='test:0.0.1'
 )
 
+print(api.image_exists('test:0.0.1'))
+
 con = api.container_create(
     image='test:0.0.1',
     name='test-alpine',
@@ -35,7 +37,7 @@ con = api.container_create(
     mounts=[
         {
             'Destination': '/test',
-            'Source': '/home/andy/Dokumente/python/podman-backup',
+            'Source': '/home/andy/Dokumente/python/podman_backup',
             'Options': ['rbind']
         }
     ],
@@ -48,7 +50,12 @@ con = api.container_create(
         }
     ]
 )
+
 api.container_start('test-alpine')
+
+api.container_pause('test-alpine')
+
+api.container_unpause('test-alpine')
 
 api.container_stop('test-alpine')
 

@@ -4,10 +4,7 @@ from podman_api import PodmanApi, PodmanSocket
 
 socket_path = '/run/user/1000/podman/podman.sock'
 pod_sock = PodmanSocket(socket_path)
-api = PodmanApi(
-    podman_socket=pod_sock,
-    api_version="v3.0.0"
-)
+api = PodmanApi(podman_socket=pod_sock)
 
 
 api.image_pull('alpine')

@@ -16,10 +16,9 @@ class PodmanApi:
     def __init__(
         self,
         podman_socket: PodmanSocket,
-        api_version: str
     ) -> None:
         self.podman_socket = podman_socket
-        self.api_version = api_version
+        self.api_version = 'v3.0.0'
 
     def image_list(self) -> List:
         logger.info('List images')

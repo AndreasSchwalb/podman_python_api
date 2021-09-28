@@ -2,7 +2,7 @@ from typing import Any, Dict, List
 from pprint import pformat
 
 from extended_config_parser import ExtendedConfigParser
-from logger import Logger
+from custom_logger import Logger
 
 from .podman_api_response import PodmanApiResponse
 from .podman_socket import PodmanSocket

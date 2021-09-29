@@ -1,6 +1,7 @@
 import json
 
 from typing import Any, Dict, List
+from collections.abc import Iterable
 
 import requests
 
@@ -32,9 +33,10 @@ class PodmanApiResponse:
             self.successfully = True
 
         self.message = self._join_dict(parsed_response)
-        for a in self.message:
-            if isinstance(a, dict) and 'error' in a.keys():
-                self.successfully = False
+        if isinstance(self.message, Iterable):
+            for a in self.message:
+                if isinstance(a, dict) and 'error' in a.keys():
+                    self.successfully = False
 
     """
     Retruns a result dictonary with lower keys

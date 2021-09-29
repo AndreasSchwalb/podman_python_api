@@ -310,3 +310,34 @@ class PodmanApi:
             logger.warning(f"Could not unpause container {name}")
             if result.message:
                 logger.warning(f"{result.message.get('cause')}")
+
+    def container_wait(
+        self,
+        name: str,
+        condition: str = "exited",
+        request_interval: str = "250ms"
+    ) -> None:
+        logger.info(f'Wait for container {name}')
+        container_exists = self.container_exists(name)
+        if container_exists:
+
+            url = f'/{self.api_version}/libpod/containers/{name}/wait'
+            resp = self.podman_socket.post(
+                url=url,
+                query_params={
+                    'condition': condition,
+                    'interval': request_interval
+                },
+                timeout=1000
+            )
+            result = PodmanApiResponse(resp)
+        else:
+            logger.warning(f"container {name} does not exist")
+            return
+
+        if result.successfully:
+            logger.info(f"Contidion {condition} of container {name} reached")
+        else:
+            logger.warning(f"Could not wait for container {name}")
+            if result.message:
+                logger.warning(f"{result.message.get('cause')}")

@@ -38,7 +38,8 @@ con = api.container_create(
             'Options': ['rbind']
         }
     ],
-    command=['/usr/bin/tail', '-f', '/dev/null'],
+    #command=['/usr/bin/tail', '-f', '/dev/null'],
+    command=['sleep', '3'],
     remove=False,
     portmappings=[
         {
@@ -54,7 +55,9 @@ api.container_pause('test-alpine')
 
 api.container_unpause('test-alpine')
 
-api.container_stop('test-alpine')
+#api.container_stop('test-alpine')
+
+api.container_wait('test-alpine')
 
 api.container_delete('test-alpine')
 

@@ -341,3 +341,24 @@ class PodmanApi:
             logger.warning(f"Could not wait for container {name}")
             if result.message:
                 logger.warning(f"{result.message.get('cause')}")
+
+    def container_exec(self, name: str, cmd: List) -> None:
+
+        logger.info(f'Execute {cmd} in container {name}')
+        body = {'Cmd': cmd}
+
+        url = f'/{self.api_version}/libpod/containers/{name}/exec'
+
+        resp = self.podman_socket.post(
+            url=url,
+            body=body,
+        )
+
+        result = PodmanApiResponse(resp)
+
+        if result.successfully:
+            logger.info(f"Successfully executed {cmd} in container {name}")
+        else:
+            logger.warning(f"Could not execute {cmd} in container {name}. {result.message.get('cause')}")
+
+        

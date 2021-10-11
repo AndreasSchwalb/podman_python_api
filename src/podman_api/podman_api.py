@@ -1,5 +1,5 @@
 from typing import Any, Dict, List
-from pprint import pformat
+from pprint import pformat, pprint
 
 from extended_config_parser import ExtendedConfigParser
 from custom_logger import Logger
@@ -361,4 +361,43 @@ class PodmanApi:
         else:
             logger.warning(f"Could not execute {cmd} in container {name}. {result.message.get('cause')}")
 
-        
+    def container_logs(
+        self,
+        name: str,
+        follow: bool = False,
+        since: str = None,
+        until: str = None,
+        stderr: bool = True,
+        stdout: bool = True,
+        timestamp: bool = False
+    ) -> Dict:
+        logger.info(f'Get logs from container {name}')
+        container_exists = self.container_exists(name)
+        if container_exists:
+            url = f'/{self.api_version}/libpod/containers/{name}/logs'
+            resp = self.podman_socket.get(
+                url=url,
+                query_params={
+                    "follow": follow,
+                    "since": since,
+                    "until": until,
+                    "stderr": stderr,
+                    "stdout": stdout,
+                    "timestamp": timestamp
+                }
+            )
+            result = PodmanApiResponse(resp)
+       
+            if result.successfully:
+                logger.info(f"Logs from container {name}")
+                return result.message
+            else:
+                logger.warning(f"Could not read logs container {name}. {result.message.get('cause')}")
+                
+
+            
+        else:
+            logger.warning(f"Could not read logs from container {name}. Container does not exists")
+            return {}
+
+       

@@ -49,13 +49,20 @@ con = api.container_create(
     ]
 )
 
+print(f'container_id: {con}')
+
 api.container_start('test-alpine')
+
+logs = api.container_logs('test-alpine')
+
+
+pprint(logs)
 
 api.container_pause('test-alpine')
 
 api.container_unpause('test-alpine')
 
-#api.container_stop('test-alpine')
+# api.container_stop('test-alpine')
 
 api.container_wait('test-alpine')
 

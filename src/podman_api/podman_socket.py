@@ -19,10 +19,14 @@ class PodmanSocket:
         self._max_connection_retry = int(config['http']['connection_retry'])
         self._connection_retry = 0
 
-    def get(self, url: str, **kwargs: Dict) -> requests.Response:
+    def get(
+            self,
+            url: str,
+            query_params: Dict = None,
+            **kwargs: Dict) -> requests.Response:
 
         try:
-            return self.session.get(f"{self.socket}{url}", timeout=1)
+            return self.session.get(f"{self.socket}{url}", params=query_params, timeout=1)
 
         except requests.exceptions.ConnectionError:
             time.sleep(1)
@@ -31,6 +35,7 @@ class PodmanSocket:
             if self._connection_retry < self._max_connection_retry:
                 return self.get(
                     url=url,
+                    query_params=query_params,
                     **kwargs
                 )
             else:

@@ -23,10 +23,19 @@ class PodmanSocket:
             self,
             url: str,
             query_params: Dict = None,
+            headers: Dict[str, str] = {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+            },
             **kwargs: Dict) -> requests.Response:
 
         try:
-            return self.session.get(f"{self.socket}{url}", params=query_params, timeout=1)
+            return self.session.get(
+                f"{self.socket}{url}",
+                params=query_params,
+                timeout=3,
+                headers=headers
+            )
 
         except requests.exceptions.ConnectionError:
             time.sleep(1)
@@ -36,6 +45,7 @@ class PodmanSocket:
                 return self.get(
                     url=url,
                     query_params=query_params,
+                    headers=headers,
                     **kwargs
                 )
             else:

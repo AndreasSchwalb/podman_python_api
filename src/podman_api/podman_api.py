@@ -370,7 +370,7 @@ class PodmanApi:
         stderr: bool = True,
         stdout: bool = True,
         timestamp: bool = False
-    ) -> Dict:
+    ) -> str:
         logger.info(f'Get logs from container {name}')
         container_exists = self.container_exists(name)
         if container_exists:
@@ -386,18 +386,8 @@ class PodmanApi:
                     "timestamp": timestamp
                 }
             )
-            result = PodmanApiResponse(resp)
-       
-            if result.successfully:
-                logger.info(f"Logs from container {name}")
-                return result.message
-            else:
-                logger.warning(f"Could not read logs container {name}. {result.message.get('cause')}")
-                
 
-            
-        else:
-            logger.warning(f"Could not read logs from container {name}. Container does not exists")
-            return {}
+            decoded_content = resp.content.decode('utf-8')
+            parsed_content = decoded_content.replace('\x01\x00\x00\x00\x00\x00\x00\x04', '\n')
 
-       
+            return parsed_content
